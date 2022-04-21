@@ -13,9 +13,9 @@ def configure_client() -> Any:
     return pb2_grpc.GetAddressDataStub(channel)
 
 
-def configure_server(exchange: Any) -> Any:
+def configure_server(exchange_creator: Any) -> Any:
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=MAX_WORKERS))
-    pb2_grpc.add_GetAddressDataServicer_to_server(exchange(), server)
+    pb2_grpc.add_GetAddressDataServicer_to_server(exchange_creator(), server)
 
     server.add_insecure_port("[::]:50061")
     return server
