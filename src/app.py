@@ -11,7 +11,7 @@ app: Flask = Flask(__name__)
 api: Api = Api(app)
 
 stub: Any = grpc_configuration.configure_client()
-# database.start_connection(app)
+database.start_connection(app)
 
 api = user_routes.add(api, stub)
 

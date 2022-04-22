@@ -7,12 +7,18 @@ from flask_restful import Resource, reqparse
 
 from grpc_config.configuration_pb2 import addressData, address
 from src.abstract_classes.grpc_translator import GrpcTranslator
+from src.abstract_classes.repository import Repository
+from src.domain.models.user_address import UserAddress
+from src.infrastructure.translators.models.user_address_translator import UserAddressTranslator
 
 
 class UserController(Resource):
-    def __init__(self, stub: Any, translator: GrpcTranslator):
+    def __init__(self, stub: Any, grpc_translator: GrpcTranslator, model_translator: UserAddressTranslator,
+                 repository: Repository):
         self.__grpc_stub: Any = stub
-        self.__translator: GrpcTranslator = translator
+        self.__grpc_translator: GrpcTranslator = grpc_translator
+        self.__model_translator: UserAddressTranslator = model_translator
+        self.__repository: Repository = repository
 
     def post(self):
         body: dict = validate_post()
@@ -22,16 +28,28 @@ class UserController(Resource):
         print(json.dumps(body, indent=4))
 
         print("\n=== Requesting to gRPC Server ===")
-        request: address = self.__translator.translate(**{"cep": cep})
+        request: address = self.__grpc_translator.translate(**{"cep": cep})
         print(request)
 
         response: addressData = self.__grpc_stub.get_data(request)
         print("\n=== Response from gRPC Server ===")
         print(response)
 
+        inserted_item: UserAddress = self.__repository.save(
+            self.__model_translator.translate_request(
+                document=body.get("document"),
+                name=body.get("name"),
+                cep=cep,
+                city=response.city,
+                neighborhood=response.neighborhood,
+                street=response.street,
+                number=body.get("number")
+            )
+        )
+
         return {
             "message": "User successfully saved",
-            "document": body.get("document")
+            **inserted_item.to_json()
         }, HTTPStatus.OK
 
 
