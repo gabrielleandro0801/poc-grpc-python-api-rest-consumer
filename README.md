@@ -23,7 +23,7 @@ Response - 201
     "cep": "01234560",
     "city": "City Name",
     "neighborhood": "Neighborhood Name",
-    "street": "Street Name,
+    "street": "Street Name",
     "number": "01"
 }
 ```
