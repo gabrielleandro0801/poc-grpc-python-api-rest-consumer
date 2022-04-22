@@ -29,6 +29,7 @@ Response - 201
 ```
 
 <h2 align="center">Flow</h2>
+
 1. The API receives a request and requests to the gRPC Server with the zipCode to get data of the address.
 2. The Server requests to Viacep API and returns to the client.
 3. The client receives the response and saves the item in database and returns the response to the client.
