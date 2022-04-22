@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+// Incoming request from client
+message address {
+  string zip_code = 1;
+}
+
+// Response to be returned by API service
+message addressData {
+  string zip_code = 1;
+  string street = 2;
+  string neighborhood = 3;
+  string city = 4;
+}
+
+service GetAddressData {
+
+  // Method definition
+  rpc get_data(address) returns (addressData) {};
+}
