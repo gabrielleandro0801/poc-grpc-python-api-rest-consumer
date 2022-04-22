@@ -50,7 +50,7 @@ class UserController(Resource):
         return {
             "message": "User successfully saved",
             **inserted_item.to_json()
-        }, HTTPStatus.OK
+        }, HTTPStatus.CREATED
 
 
 def validate_post() -> dict:
